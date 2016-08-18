@@ -1,0 +1,60 @@
+0970  
+  0971
+0972
+0978
+0979
+097H
+097BB
+97C
+097D
+  TIMER_GetTtiTraceRespDl
+TIMER_GetTtiTraceRespUl  
+   AGENT_GetLomTraceReq
+AGENT_GetLomTraceResp
+AGENT_GPS_STATUS_REQ
+CellResGroup_ParamsResetReq
+PhyDlSim_PdschEventQueueIdReq
+0985  =Ps_UlRipAlarmInd
+0986=  RTM_PhySimConfigReq
+   0987=PS_UplaneOverloadFaultReport
+0987=PS_UplaneOverloadFaultReport
+
+235F=MAC_CcchDataSendReq
+2360=MAC_InternalAddressReq
+2361=MAC_InternalAddressResp
+2364=MAC_RlcDataRegisterReq
+2365=MAC_RlcDataRegisterResp
+2366=MAC_RlcDataSendReq
+2367=MAC_RlcDataSendResp
+2377=MAC_TriggerInactivityInd
+237A=PHY_DlPhyDataAddressReq
+237B=PHY_DlPhyDataAddressResp
+237C=PHY_PucchReceiveRespU
+237D=PHY_UlPhyDataAddressReq
+237E=PHY_UlPhyDataAddressResp
+2397=DlSch_UeAddResp
+23BA=UlSch_UeAddReq
+23BB=UlSch_UeAddResp
+23CC=UlSch_UeDeleteReq
+23CD=UlSch_UeDeleteResp
+23D6=Sch_CongestionInfoInd
+23DC=SchRecv_UlSch_PuschReceiveReq
+23DE=MSR_DlBufferStatusInd
+240C=UlSch_PdcchInfoInd
+2486=MAC_MeasurementReportInd
+24AE=PHY_PucchReceiveCqiRespD
+24AF=PHY_PucchReceiveMeasResp
+24B0=PHY_PuschReceiveCqiRespD
+24B1=PHY_PuschReceiveMeasResp
+24B2=PHY_SrsReceiveReq
+24B3=PHY_SrsReceiveRespD
+24B4=PHY_SrsReceiveRespU
+24D1=UlMsr_UeSynchInd
+24F7=Msr_WmpUlBufferStatusInd
+2520=MSR_DLConfigChangeIND
+2521=MSR_ULConfigChangeIND
+255D=Sch_CongestionInfoInd
+25BA=MAC_SIB12BroadcastReq
+25BB=MAC_SIB12BroadcastResp
+25BC=MAC_SIB12BroadcastInd
+2610=MAC_RadioBearerReleaseInd

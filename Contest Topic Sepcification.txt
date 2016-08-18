@@ -1,0 +1,178 @@
+Contest Topic Sepcification
+
+==> Task:
+
+There's already a tool developed to parse our product log, extracting certain messages from it. It contains some bugs and we also have some new requirements coming. Your task is, based on existent implementation(see src/rtm_log_parser.cpp under your contest project), fix the bugs, implement the new requirements and refactor the code.
+
+==> Current functionalities:
+
+The tool reads log file line by line, and matches the content with certain patterns. If matched, the message information will be extracted, and be written to standard output with predefined formats.
+
+It supports several format patterns as listed below.
+
+Pattern 1 (42e1 is the message id, mapped to PS_DlPrbsAvailInd. The mapping between message ID and message name are defined in /src/ messages.properties under your contest project folder)
+
+[0x1011110b->0x1011127f] msg_type:42e1, flag:0, payload length:40
+Desired output:
+
+Message> PS_DlPrbsAvailInd:1011110b->1011127f
+Pattern 2 (26bc is the message id, mapped to PS_StopUeReq):
+
+0x26bc: 1011127f --> 30111103
+Desired output:
+
+Message> PS_StopUeReq:1011127f-->30111103
+Pattern 3:
+
+RTM   <24:02.00> ######### Prev_Subframe=1, Subframe_Number=2,Next_Subframe=3,OTA_Subframe=4,Frame_Number=24,Next_Frame=24,OTA_Frame=24######### 
+Desired output:
+
+Time> 24:02
+Pattern 4:
+
+RTM   <24:05.00> User Delete: crnti (54135), ueId (0), ueIndex (0), TM(4)
+Desired output:
+
+Note> User Delete: crnti (54135), ueId (0), ueIndex (0), TM(4) 
+Bugs:
+
+Messages in log file may be out of time order. You are required to reorder messages in time sequence, and output in json format.
+Current output:
+
+Time> 09:02
+Note> ######### Msg 4 start #########
+Message> PS_UeIndexMgmtReq:1011127f-->10111105
+Time> 09:00
+Message> PHY_PdcchSendReq:3011110d-->1011127f
+Message> PHY_PdcchSendReq:2011110d-->1011127f
+Proposed output:
+
+{time:"09:00", message:"PHY_PdcchSendReq", from:"3011110d", to:"1011127f"}
+{time:"09:00", message:"PHY_PdcchSendReq", from:"2011110d", to:"1011127f"}
+{time:"09:02", note:"######### Msg 4 start #########"}
+{time:"09:02", message:"PS_UeIndexMgmtReq", from:"1011127f", to:"10111105"}
+In current output, some note lines (started with "Note>") are blank, they should be removed.
+There's one bug in the tool that gives below messy output, please fix it
+Message> 110b
+:
+?_3-->?7?Z
+
+==> New Requirements:
+
+Support message black-list, skipping messages in the list.
+Support message white-list, processing only defined messages in list.
+Support to parse multiple log files under specified directory.
+UT is mandatory.
+
+==> Appendix
+
+Current Implementation Example:
+
+RTM   <09:00.00> ######### Prev_Subframe=9, Subframe_Number=0,Next_Subframe=1,OTA_Subframe=2,Frame_Number=9,Next_Frame=9,OTA_Frame=9######### 
+RTM   <09:00.00>  
+......
+RTM   <09:00.00> ######### Send PS_UeIndexMgmtReq  ######### 
+......
+0x400b: 1011127f --> 10111105
+[0x10111105->0x1011127f] msg_type:400c, flag:0, payload length:64
+......
+RTM   <09:00.00> ######### QueryUeIndex: recv PS_UeIndexMgmtResp, ueIndex = 4, ueGroup=4, user_crnti = 42724######### 
+......
+RTM   <09:01.00> ######### Prev_Subframe=0, Subframe_Number=1,Next_Subframe=2,OTA_Subframe=3,Frame_Number=9,Next_Frame=9,OTA_Frame=9######### 
+[0x1011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x3011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x2011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+......
+0x400b: 1011127f --> 10111105
+......
+[0x10111105->0x1011127f] msg_type:400c, flag:0, payload length:64
+......
+0x26d5: 1011127f --> 10111103
+......
+[0x3011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x1011110b->0x1011127f] msg_type:4362, flag:0, payload length:360
+[0x2011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x1011110d->0x1011127f] msg_type:2102, flag:0, payload length:56
+......
+[0x1011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x2011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+[0x3011110d->0x1011127f] msg_type:2102, flag:0, payload length:40
+......
+
+Output:
+
+Time> 09:00
+Note>
+Note> ######### Send PS_UeIndexMgmtReq  #########
+Message> PS_UeIndexMgmtReq:1011127f-->10111105
+Message> PS_UeIndexMgmtResp:10111105-->1011127f
+Note> ######### QueryUeIndex: recv PS_UeIndexMgmtResp, ueIndex = 4, ueGroup=4, user_crntTime> 09:01
+Message> PHY_PdcchSendReq:1011110d-->1011127f
+Message> PHY_PdcchSendReq:3011110d-->1011127f
+Message> PHY_PdcchSendReq:2011110d-->1011127f
+Time> 09:02
+Note> ######### Msg 4 start #########
+Message> PS_UeIndexMgmtReq:1011127f-->10111105
+Message> PS_UeIndexMgmtResp:10111105-->1011127f
+Message> Msr_CcchDataInd:1011127f-->10111103
+Message> PHY_PdcchSendReq:3011110d-->1011127f
+Message> MAC_PduMuxCombinedReq:1011110b-->1011127f
+Message> PHY_PdcchSendReq:2011110d-->1011127f
+Message> PHY_PdcchSendReq:1011110d-->1011127f
+Time> 09:03
+Message> PHY_PdcchSendReq:1011110d-->1011127f
+Message> PHY_PdcchSendReq:2011110d-->1011127f
+Message> PHY_PdcchSendReq:3011110d-->1011127f
+
+
+==> Clean Code Contest 2015 Rules
+
+Participant can be individual or team, if register as team, you can indicate one person as representative of team.
+Nokia internal employee only, the mail address shall be in Suri, Rajeev (Nokia - CN/Hangzhou) format.
+Commit due date: November 3 2015
+Commit to gitlab private repository which link will be sent to you after enroll successfully
+Plagiarism is not allowed
+Both C and C++ programming language are allowed
+In case programming language is C, please follow C99 standard
+gcc 4.3.x and above version is recommended
+3rd party library is not allowed (for example, STL can be used, but boost is not allowed)
+C++ 11 and earlier version are allowed to use, but C++ 14 features are not allowed
+Unit testing is mandatory (cpputest or getst/gmock)
+Build under Linux 32/64, binary can run on Linux 32/64 platform
+Provide auto building and unit testing running, e.g. ./make, ./make ut
+If any question, please contact: I_EXT_HZ_CLEANCODE_CONTEST_COMMITTEE_GMS DG or Wang, Gang-Layner (Nokia - CN/Hangzhou)
+
+
+
+Clean Code Contest Programming Guide
+This is lightweight guideline for you writing clean code in Clean Code Contest, and this also will be a part of judgement reference.
+
+Required
+1. Integrity and functional
+2. Good / Well refactored unit tests
+3. Readability
+Function should do one thing: relatively short, To paragram, statements in function should be in same abstract level.
+Naming: meaningful, clearly and correctly express the meaning. Recommendation: varaible can be as "noun" or "adjective" word, class or structure is named as "noun", function name is "verb" (it can be named as "noun + verb" in C language)
+Deep function invoking: too high invoking depth affect readability. Human brain has limited stack/memory resource.
+Relatively low complexity
+4. High cohesion, low coupling
+Low coupling: reduce the dependancy between modules.
+Reduce deep nest in data structure.
+Encapsulation: encapsulate module into format of "data structure + related functions". Each module has single responsibility (high cohesion): structure + related function to form a module (same .c file)
+Duplication: avoid duplicate logic in function, redundant information in structure.
+Source file organization: structured file organization.
+Compile and deployment dependency: as less and possible, clean.
+Desired
+1. Performance in time and space
+2. Stability
+Exception handle
+Memory leak/stack overflow
+Semaphore lock
+3. Tracing
+As an product, tracing is necessary.
+Log location and information: should be from customer viewpoint, based on complete scenario.
+Reference
+代码整洁之道
+Clean Code
+重构
+Refactoring

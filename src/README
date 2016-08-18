@@ -1,0 +1,60 @@
+Run Time Log Parse Tool
+============================
+
+
+file(s) declaration
+---------------------
+Makefile: 
+	auto build makefile
+
+src:
+	source code for the Run Time Log Parse tool
+
+message_info:
+	messages information used as the input files for the tool
+
+drx_log:
+	some log files for testing
+
+gtest-1.7.0:
+	gtest framework, used for unit test
+	
+ut:
+	code for unit test
+
+
+
+Setting up the Build
+--------------------
+
+[build project:]
+make 
+./rtm_log_parser
+run without arguments for the "Usage" show.
+
+[build ut project:]
+cd ut/
+	make 
+	./run_test
+
+
+Requirements for Users
+--------------------------
+1. proviade messages properties in file messages.properties
+2. proviade "white list" or "black list" in the file "white list.txt" or "black_list.txt" if you need.
+3. proviade log file(s) you want to parse.
+
+----------------- Usage: ------------------
+ * [Function:] run time log parser.
+ * Input:
+    [1] run time log file path or directory
+    [2] filter mode:
+         0: no mode seclete (default)
+         1: white list
+         2: black list
+ * @Example: ./rtm_log_parser drx_log/drx.log
+ * @Example: ./rtm_log_parser drx_log/drx.log 1
+ * @Example: ./rtm_log_parser drx_log 1
+ * Output:
+       file(s) named *_extractLog.txt at the same path as log file.
+-------------------------------------------
